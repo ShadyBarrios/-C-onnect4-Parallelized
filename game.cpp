@@ -35,6 +35,8 @@ int main(){
     for(int i = 0; i < ntasks; i++)
         tasks.emplace_back(i, ntasks, pointers[i], lengths[i]);
 
+    endGame = false;
+
     for(;;){
         display();
         std::cout << "Player " << currentPlayer << ", it is your turn...\n";
@@ -48,12 +50,15 @@ int main(){
             validInput = drop(intSelection);
         }while(!validInput);
 
+        checkBoard(tasks);
+        if(endGame){
+            winner = currentPlayer;
+            break;
+        }
         currentPlayer = (currentPlayer == 1) + 1; // if player 1, sets to 0+1. if player 2 sets to 1+1
-
-        // if(checkBoard())
-        //     break;
     }
 
+    display();
     cout << "Player " << winner << " has won! Congratulations!" << endl;
     
     return 0;

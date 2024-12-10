@@ -1,12 +1,13 @@
 #ifndef _TASK_H_
 #define _TASK_H_
 #include <atomic>
+#include <iostream>
 using namespace std;
 
 extern atomic<bool> endGame;
 extern int winner;
 
-extern void checkLine(const int**, int);
+extern void checkLine(const int**, int, int);
 
 class Task{
     int id;

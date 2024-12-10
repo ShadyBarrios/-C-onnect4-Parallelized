@@ -2,7 +2,7 @@
 
 atomic<bool> endGame(false);
 
-void checkLine(const int** line, int size) {
+void checkLine(const int** line, int size, int id) {
     int count = 1;
     winner = 0;
 
@@ -11,18 +11,13 @@ void checkLine(const int** line, int size) {
             ++count;
             if (count == 4) {
                 endGame = true;
-                winner = *line[i];
             }
         } else {
             count = 1;
         }
     }
-    endGame = false;
 }
 
 void Task::execute(){
-    checkLine(assigned, N);
-    
-    if(endGame.load())
-        return;
+    checkLine(assigned, N, id);
 }
