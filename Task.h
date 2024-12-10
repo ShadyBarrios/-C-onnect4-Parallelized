@@ -4,6 +4,7 @@
 using namespace std;
 
 extern atomic<bool> endGame;
+extern int winner;
 
 extern void checkLine(const int**, int);
 

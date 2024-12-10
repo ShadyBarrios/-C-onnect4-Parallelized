@@ -15,10 +15,13 @@ using namespace std;
 pthread_barrier_t bar;
 
 int currentPlayer = 1;
-
+char colSelection;
+int intSelection;
+bool validInput;
 
 int toInt(char);
 void display();
+void displayRaw();
 bool drop(int);
 void verifyInput(char&);
 int checkBoard(std::vector<Task>);
@@ -31,13 +34,25 @@ int main(){
     for(int i = 0; i < ntasks; i++)
         tasks.emplace_back(i, ntasks, pointers[i], lengths[i]);
 
-    //do{
+    for(;;){
         display();
         std::cout << "Player " << currentPlayer << ", it is your turn...\n";
-        currentPlayer = (currentPlayer == 2) + 1; // if player 1, sets to 0+1. if player 2 sets to 1+1
-    //}while(!endGame.load());
+        validInput = true;
 
-    // checkBoard(tasks);
+        do{
+            std::cout << "Select a column: ";
+            std::cin >> colSelection;
+            verifyInput(colSelection);
+            intSelection = toInt(colSelection);
+            validInput = drop(intSelection);
+        }while(!validInput);
+        currentPlayer = (currentPlayer == 1) + 1; // if player 1, sets to 0+1. if player 2 sets to 1+1
+
+        // if(checkBoard())
+        //     break;
+    }
+
+    cout << "Player " << winner << " has won! Congratulations!" << endl;
     
     return 0;
 }
@@ -61,14 +76,28 @@ void display() {
     std::cout << "A B C D E F G\n";
 }
 
+void displayRaw() {
+    char symbol = ' ';
+    for (int i = rows - 1; i >= 0; --i) {
+        for (int j = 0; j < columns; ++j) {
+            std::cout << board[i][j] << " ";
+        }
+        std::cout << "\n";
+    }
+    std::cout << "-------------\n";
+    std::cout << "A B C D E F G\n";
+}
+
 void verifyInput(char &ch){
     bool flag;
+    ch = toupper(ch);
     do{
         flag = true;
-        if(ch >= 'A' && ch == 'G')
+
+        if(ch >= 'A' && ch <= 'G')
             flag = false;
         else{
-            std::cerr << "That is an invalid row, try again." << std::endl;
+            std::cerr << "That is an invalid row, try again: ";
             std::cin >> ch;
             ch = toupper(ch);
         }
@@ -82,7 +111,7 @@ bool drop(int column){
     }
     
     for(int i = 0; i < rows; i++){
-        if(board[i][column] != 0){
+        if(board[i][column] == 0){
             board[i][column] = currentPlayer;
             return true;
         }
