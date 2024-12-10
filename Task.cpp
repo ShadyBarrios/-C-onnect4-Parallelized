@@ -4,19 +4,20 @@ atomic<bool> endGame(false);
 
 void checkLine(const int** line, int size) {
     int count = 1;
-    int possibleWinner = 0;
+    winner = 0;
+
     for (int i = 1; i < size; ++i) {
         if (*line[i] == *line[i - 1] && *line[i] != 0) {
             ++count;
-            possibleWinner = line[i];
             if (count == 4) {
-                return possibleWinner;
+                endGame = true;
+                winner = *line[i];
             }
         } else {
             count = 1;
         }
     }
-    return 0;
+    endGame = false;
 }
 
 void Task::execute(){
