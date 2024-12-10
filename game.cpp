@@ -15,6 +15,7 @@ using namespace std;
 pthread_barrier_t bar;
 
 int currentPlayer = 1;
+int winner = 0;
 char colSelection;
 int intSelection;
 bool validInput;
@@ -24,7 +25,7 @@ void display();
 void displayRaw();
 bool drop(int);
 void verifyInput(char&);
-int checkBoard(std::vector<Task>);
+bool checkBoard(std::vector<Task>);
 
 int main(){
     const int ntasks = 28; 
@@ -46,6 +47,7 @@ int main(){
             intSelection = toInt(colSelection);
             validInput = drop(intSelection);
         }while(!validInput);
+
         currentPlayer = (currentPlayer == 1) + 1; // if player 1, sets to 0+1. if player 2 sets to 1+1
 
         // if(checkBoard())
@@ -89,19 +91,18 @@ void displayRaw() {
 }
 
 void verifyInput(char &ch){
-    bool flag;
+    bool valid;
     ch = toupper(ch);
-    do{
-        flag = true;
 
-        if(ch >= 'A' && ch <= 'G')
-            flag = false;
-        else{
+    do{
+        valid = (ch >= 'A' && ch <= 'G');
+
+        if(!valid){
             std::cerr << "That is an invalid row, try again: ";
             std::cin >> ch;
             ch = toupper(ch);
         }
-    }while(flag);
+    }while(!valid);
 }
 
 bool drop(int column){
@@ -119,7 +120,7 @@ bool drop(int column){
     return false;
 }
 
-int checkBoard(std::vector<Task> tasks){
+bool checkBoard(std::vector<Task> tasks){
     pthread_barrier_init(&bar, nullptr, tasks.size());
     
     std::vector<pthread_t> threads(tasks.size());
