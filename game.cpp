@@ -8,49 +8,22 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <atomic>
 #include "resources.h"
+#include "Task.h"
 using namespace std;
 
 pthread_barrier_t bar;
 
 int currentPlayer = 1;
 
-atomic<bool> endGame(false);
 
 int toInt(char);
 void display();
 bool drop(int);
 void verifyInput(char&);
-void checkLine(const int**, int);
-
-
-class Task{
-    int id;
-    int ntasks;
-    const int** assigned;
-    int N;
-public:
-    Task(int id, const int ntasks, const int** assigned, int N) : id(id), ntasks(ntasks), assigned(assigned), N(N){}
-
-    static void* runner(void* arg){
-        reinterpret_cast<Task*>(arg)->execute();
-        return nullptr;
-    }
-
-    void execute(){
-        checkLine(assigned, N);
-        
-        if(endGame.load())
-            return;
-    }
-};
-
 int checkBoard(std::vector<Task>);
 
 int main(){
-    
-
     const int ntasks = 28; 
     pthread_t threads[ntasks];
 
@@ -115,19 +88,6 @@ bool drop(int column){
         }
     }
     return false;
-}
-
-void checkLine(const int** line, int size) {
-    int count = 1;
-    for (int i = 1; i < size; ++i) {
-        if (*line[i] == *line[i - 1] && *line[i] != 0) {
-            ++count;
-            if (count == 4) endGame = true;
-        } else {
-            count = 1;
-        }
-    }
-    endGame = false;
 }
 
 int checkBoard(std::vector<Task> tasks){
